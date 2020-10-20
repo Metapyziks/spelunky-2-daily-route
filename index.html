@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spelunky 2 - Daily Challenge Route</title>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: larger;
+                text-align: center;
+                color: #2E304F;
+                background-color: #B8BBF5;
+            }
+
+            .content {
+                background-color: white;
+                width: 30em;
+                padding: 1em;
+
+                border-radius: 0.5em;
+                box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.5);
+
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+
+            .value {
+                font-weight: bold;
+                color: #3E429E;
+            }
+        </style>
+        <script>
+            const MILLISECONDS_PER_SECOND = 1000;
+            const MILLISECONDS_PER_MINUTE = 60 * MILLISECONDS_PER_SECOND;
+            const MILLISECONDS_PER_HOUR = 60 * MILLISECONDS_PER_MINUTE;
+            const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
+
+            const ROUTES = [
+                "Jungle → Tide Pool",
+                "Volcana → Tide Pool",
+                "Jungle → Temple of Anubis",
+                "Volcana → Temple of Anubis",
+            ];
+
+            function updateInfo() 
+            {
+                var now = new Date();
+
+                var nowUtc = Date.now();
+                var todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+                var tomorrowUtc = todayUtc + MILLISECONDS_PER_DAY;
+                var epochUtc = Date.UTC(2020, 8, 30);
+
+                var days = Math.floor((todayUtc - epochUtc) / MILLISECONDS_PER_DAY);
+
+                var today = new Date(todayUtc);
+                var epoch = new Date(epochUtc);
+
+                document.getElementById("today").innerText = `${today.getUTCFullYear()}/${today.getUTCMonth()+1}/${today.getUTCDate()}`;
+                document.getElementById("days-since").innerText = days.toString();
+                document.getElementById("epoch").innerText = `${epoch.getUTCFullYear()}/${epoch.getUTCMonth()+1}/${epoch.getUTCDate()}`;
+                document.getElementById("route").innerText = ROUTES[days % ROUTES.length];
+
+                var expireHours = Math.floor((tomorrowUtc - nowUtc) / MILLISECONDS_PER_HOUR);
+                var expireMinutes = Math.floor(((tomorrowUtc - nowUtc) % MILLISECONDS_PER_HOUR) / MILLISECONDS_PER_MINUTE);
+                var expireSeconds = Math.floor(((tomorrowUtc - nowUtc) % MILLISECONDS_PER_MINUTE) / MILLISECONDS_PER_SECOND);
+
+                document.getElementById("expire-hours").innerText = expireHours;
+                document.getElementById("expire-minutes").innerText = expireMinutes;
+                document.getElementById("expire-seconds").innerText = expireSeconds;
+
+                document.getElementById("expire-hours-units").innerText = expireHours == 1 ? "hour" : "hours";
+                document.getElementById("expire-minutes-units").innerText = expireMinutes == 1 ? "minute" : "minutes";
+                document.getElementById("expire-seconds-units").innerText = expireSeconds == 1 ? "second" : "seconds";
+
+                window.setTimeout(updateInfo, 1000);
+            }
+
+            window.addEventListener("load", function(ev) {
+                updateInfo();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <p>Today is <span id="today" class="value">?</span>.</p>
+            <p>It has been <span id="days-since" class="value">?</span> days since <span id="epoch" class="value">?</span>.</p>
+            <p>Today's route is <span id="route" class="value">?</span>.</p>
+            <p>
+                The daily will expire in <span id="expire-hours" class="value">?</span> <span id="expire-hours-units">hours</span>,
+                <span id="expire-minutes" class="value">?</span> <span id="expire-minutes-units">minutes</span>,
+                and <span id="expire-seconds" class="value">?</span> <span id="expire-seconds-units">seconds</span>.
+            </p>
+        </div>
+    </body>
+</html>
