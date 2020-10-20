@@ -8,7 +8,9 @@
                 font-size: larger;
                 text-align: center;
                 color: #2E304F;
-                background-color: #B8BBF5;
+                
+                background-color: rgb(166, 166, 166);
+                background-blend-mode: multiply;
             }
 
             .content {
@@ -38,11 +40,13 @@
             const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
 
             const ROUTES = [
-                "Jungle → Tide Pool",
-                "Volcana → Tide Pool",
-                "Jungle → Temple of Anubis",
-                "Volcana → Temple of Anubis",
+                { name: "Jungle → Tide Pool", background: "http://www.mossmouth.com/spelunky2/images/spel2_screen02.jpg" },
+                { name: "Volcana → Tide Pool", background: "http://www.mossmouth.com/spelunky2/images/spel2_screen03.jpg" },
+                { name: "Jungle → Temple of Anubis", background: "http://www.mossmouth.com/spelunky2/images/spel2_screen02.jpg" },
+                { name: "Volcana → Temple of Anubis", background: "http://www.mossmouth.com/spelunky2/images/spel2_screen03.jpg" },
             ];
+
+            var lastDays = -1;
 
             function updateInfo() 
             {
@@ -58,10 +62,12 @@
                 var today = new Date(todayUtc);
                 var epoch = new Date(epochUtc);
 
+                var route = ROUTES[days % ROUTES.length];
+
                 document.getElementById("today").innerText = `${today.getUTCFullYear()}/${today.getUTCMonth()+1}/${today.getUTCDate()}`;
                 document.getElementById("days-since").innerText = days.toString();
                 document.getElementById("epoch").innerText = `${epoch.getUTCFullYear()}/${epoch.getUTCMonth()+1}/${epoch.getUTCDate()}`;
-                document.getElementById("route").innerText = ROUTES[days % ROUTES.length];
+                document.getElementById("route").innerText = route.name;
 
                 var expireHours = Math.floor((tomorrowUtc - nowUtc) / MILLISECONDS_PER_HOUR);
                 var expireMinutes = Math.floor(((tomorrowUtc - nowUtc) % MILLISECONDS_PER_HOUR) / MILLISECONDS_PER_MINUTE);
@@ -74,6 +80,11 @@
                 document.getElementById("expire-hours-units").innerText = expireHours == 1 ? "hour" : "hours";
                 document.getElementById("expire-minutes-units").innerText = expireMinutes == 1 ? "minute" : "minutes";
                 document.getElementById("expire-seconds-units").innerText = expireSeconds == 1 ? "second" : "seconds";
+
+                if (lastDays != days) {
+                    lastDays = days;
+                    document.body.style = `background-image: url("${route.background}")`;
+                }
 
                 window.setTimeout(updateInfo, 1000);
             }
